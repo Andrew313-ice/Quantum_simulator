@@ -41,9 +41,7 @@ GATE_DICT = {
 print(callable(GATE_DICT['rz']))
 
 
-def func():
-    a = [1]
-    # return a.append(2)
-    return a.append(2)
-
-print(func())
+print(np.array([[1, 0],
+                [0, 0],
+                [0, 1]
+                [0, 0]]))
