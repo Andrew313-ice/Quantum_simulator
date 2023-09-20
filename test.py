@@ -34,9 +34,20 @@ print(reduce(np.kron, ([np.eye(2)] +  [np.eye(2) * (2 - 1)])))
 
 print((tmp:=np.array([1, 1])) / np.linalg.norm(tmp))
 
-n = 0
-for i in range(1000):
-    n += np.random.choice([0, 1])
-print(n / 1000)
-
-print(type(np.eye(2).shape[0]))
+GATE_DICT = {
+    'x':np.eye(2)[[1, 0], :],
+    'y':np.array([[0. , -1.j],
+                  [1.j, 0.  ]]), 
+    'z':np.array([[1., 0. ],
+                  [0., -1.]]),
+    'h':np.array([[1.0, 1.0 ],
+                  [1.0, -1.0]]) / np.sqrt(2),
+    'rx':lambda theta:np.array([[np.cos(theta/2)    , -1j*np.sin(theta/2)],
+                                [-1j*np.sin(theta/2), np.cos(theta/2)    ]]), 
+    'ry':lambda theta:np.array([[np.cos(theta/2), -np.sin(theta/2)],
+                                [np.sin(theta/2), np.cos(theta/2) ]]), 
+    'rz':lambda theta:np.array([[np.exp(-1j*theta/2), 0                 ],
+                                [0                  , np.exp(1j*theta/2)]])
+}
+print(callable(GATE_DICT['rz']))
+print(max(1, 2))

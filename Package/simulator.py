@@ -16,7 +16,8 @@ GATE_DICT = {
     'ry':lambda theta:np.array([[np.cos(theta/2), -np.sin(theta/2)],
                                 [np.sin(theta/2), np.cos(theta/2) ]]), 
     'rz':lambda theta:np.array([[np.exp(-1j*theta/2), 0                 ],
-                                [0                  , np.exp(1j*theta/2)]])
+                                [0                  , np.exp(1j*theta/2)]]),
+    'cnot':np.eye(4)
 }
 
 class QuantumSimulator():
@@ -30,9 +31,9 @@ class QuantumSimulator():
         self.num_qubits = num_qubits
 
 
-    '''打印量子模拟器的信息'''
-    def __repr__(self) -> str:
-        return f'当前量子模拟器的比特数为：{self.num_qubits}\n量子态矢量为：\n{self.state}'
+    '''打印量子态'''
+    def dump(self) -> None:
+        print(self.state)
 
 
     '''重置量子态'''
@@ -69,11 +70,19 @@ class QuantumSimulator():
             gate = GATE_DICT[gate_name]
         except KeyError:
             raise RuntimeError(f'量子门 {gate_name} 不存在')
-        if not (angle and qubit_control):
+        if not qubit_control:
             self.state = reduce(np.kron, 
                                 [I] * (qubit - 1) + \
-                                [gate] + \
+                                [gate(angle) if callable(gate) else gate] + \
                                 [I] * (self.num_qubits - qubit)
+                         ) @ self.state
+        else:
+            self.state = reduce(np.kron,
+                                [I] * (min(qubit, qubit_control) - 1) + \
+                                [gate[[0, 3, 2, 1], :] 
+                                 if qubit < qubit_control else 
+                                 gate[[0, 1, 3, 2], :]] + \
+                                [I] * (self.num_qubits - max(qubit, qubit_control))
                          ) @ self.state
 
 
@@ -81,7 +90,7 @@ class QuantumSimulator():
     :param qubit:   待测量比特位
     '''
     def measure(self,
-                qubit:int = 1) -> bool:
+                qubit:int = 1) -> int:
         projection_operator = [
             reduce(np.kron, 
                    [I] * (qubit - 1) + \
@@ -96,6 +105,12 @@ class QuantumSimulator():
         rand = np.random.choice([0, 1], 
                                 p=[np.linalg.norm(states[i]) ** 2 for i in range(2)])
         self.state = (tmp:=states[rand]) / np.linalg.norm(tmp)
-        return bool(rand)
+        return rand
     
+
+if __name__ == '__main__': 
+    qs = QuantumSimulator(3)
+    qs.act_gate('h', 2)
+    qs.act_gate('cnot', 3, 2)
+    qs.dump()
 
