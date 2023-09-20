@@ -109,8 +109,8 @@ class QuantumSimulator():
     
 
 if __name__ == '__main__': 
-    qs = QuantumSimulator(3)
-    qs.act_gate('h', 2)
-    qs.act_gate('cnot', 3, 2)
+    qs = QuantumSimulator(2)
+    qs.act_gate('h', 1)
+    qs.act_gate('cnot', 2, 1)
     qs.dump()
 
