@@ -1,1 +1,1 @@
-# Quantum_simulator
+# 典型量子信息过程的模拟

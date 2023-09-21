@@ -50,4 +50,5 @@ print(callable(GATE_DICT['rz']))
 #                               density_operator @  \
 #                               np.kron(ket[i], I)
 
-print(reduce(np.matmul, [np.eye(2)]*4))
+print(np.kron(np.eye(2), np.array([[1.], [0.]])).T.conjugate())
+print(np.kron(np.eye(2), np.array([[1., 0.]])))

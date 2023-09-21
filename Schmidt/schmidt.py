@@ -25,21 +25,26 @@ def schmidt_decomposition(target_psi:np.ndarray,
     
     '''生成子空间的约化密度矩阵
     :param dim:     子空间维度
-    :param flag:    标记A、B子空间    
+    :param dim_:    约化子空间维度
+    :param flag:    标记约化子空间中的基的索引    
     '''
-    def get_rhoAB(dim:int, flag:int) -> None:
-        for i in range(dim):
-            density_operator_AB[flag] += reduce(np.matmul, 
-                                                [np.kron(np.eye(dim), 
-                                                        ket_AB[flag][i].T.conjugate())] + \
+    def get_rhoAB(dim:int, dim_:int, flag:int) -> None:
+        for i in range(dim_):
+            density_operator_AB[1-flag] += reduce(np.matmul, 
+                                                [tmp:=(np.kron(np.eye(dim), 
+                                                       ket_AB[flag][i].T.conjugate()))] + \
                                                 [density_operator] + \
-                                                [np.kron(np.eye(dim), ket_AB[flag][i])]
-                                         ) 
-    get_rhoAB(dimA, 0); get_rhoAB(dimB, 1)
+                                                [tmp.T.conjugate()]
+                                         )
+    get_rhoAB(dimA, dimB, 1); get_rhoAB(dimB, dimA, 0)
 
+    e_vals = []; e_vecs = []
     e_val, e_vec = np.linalg.eig(density_operator_AB[0])
+    e_vals.append(e_val); e_vecs.append(e_vec)
     print('子空间 A 约化密度矩阵的本征值为：', e_val, '，本征矢为：', e_vec)
+
     e_val, e_vec = np.linalg.eig(density_operator_AB[1])
+    e_vals.append(e_val); e_vecs.append(e_vec)
     print('子空间 B 约化密度矩阵的本征值为：', e_val, '，本征矢为：', e_vec)
 
     print('该纯态为：', '直积态' if sum(e_val == 1) == 1 else '纠缠态')
@@ -47,10 +52,10 @@ def schmidt_decomposition(target_psi:np.ndarray,
 
 if __name__ == "__main__":
     psi_test = np.array([[1.],
-                         [1.],
-                         [1.],
+                         [0.],
+                         [0.],
                          [1.]])
     schmidt_decomposition(psi_test)
-
-    
-    
+    print()
+    psi_test = np.ones([2**3]*2)[:, 1, None]
+    schmidt_decomposition(psi_test, 1, 2)
