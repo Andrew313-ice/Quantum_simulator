@@ -37,17 +37,16 @@ def schmidt_decomposition(target_psi:np.ndarray,
                                                 [tmp.T.conjugate()]
                                          )
     get_rhoAB(dimA, dimB, 1); get_rhoAB(dimB, dimA, 0)
+    e_vals = [0, 0]
+    e_vals[0], e_vecA = np.linalg.eig(density_operator_AB[0])
+    print('子空间 A 约化密度矩阵的本征值为：', e_vals[0], '，本征矢为：', e_vecA)
 
-    e_vals = []; e_vecs = []
-    e_val, e_vec = np.linalg.eig(density_operator_AB[0])
-    e_vals.append(e_val); e_vecs.append(e_vec)
-    print('子空间 A 约化密度矩阵的本征值为：', e_val, '，本征矢为：', e_vec)
+    e_vals[1], e_vecB = np.linalg.eig(density_operator_AB[1])
+    print('子空间 B 约化密度矩阵的本征值为：', e_vals[1], '，本征矢为：', e_vecB)
 
-    e_val, e_vec = np.linalg.eig(density_operator_AB[1])
-    e_vals.append(e_val); e_vecs.append(e_vec)
-    print('子空间 B 约化密度矩阵的本征值为：', e_val, '，本征矢为：', e_vec)
-
-    print('该纯态为：', '直积态' if sum(e_val == 1) == 1 else '纠缠态')
+    min_dim_index = 0 if e_vals[0].shape[0] <= e_vals[1].shape[0] else 1
+    print('该纯态为：', '直积态' if np.round(max(e_vals[min_dim_index]), 10) == 1 
+                               else '纠缠态', '\n')
 
 
 if __name__ == "__main__":
@@ -56,6 +55,6 @@ if __name__ == "__main__":
                          [0.],
                          [1.]])
     schmidt_decomposition(psi_test)
-    print()
+
     psi_test = np.ones([2**3]*2)[:, 1, None]
     schmidt_decomposition(psi_test, 1, 2)
