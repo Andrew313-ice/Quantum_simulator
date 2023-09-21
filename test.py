@@ -40,8 +40,14 @@ GATE_DICT = {
 }
 print(callable(GATE_DICT['rz']))
 
+# I = np.eye(2)
+# ket = [I[:, i, None] for i in range(2)]
+# for i in range(2):
+#     density_operator_AB[0] += np.kron(I, ket[i].T.conjugate()) @ \
+#                               density_operator @ \
+#                               np.kron(I, ket[i])
+#     density_operator_AB[1] += np.kron(ket[i].T.conjugate(), I) @  \
+#                               density_operator @  \
+#                               np.kron(ket[i], I)
 
-print(np.array([[1, 0],
-                [0, 0],
-                [0, 1]
-                [0, 0]]))
+print(reduce(np.matmul, [np.eye(2)]*4))

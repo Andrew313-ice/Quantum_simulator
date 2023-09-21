@@ -39,7 +39,7 @@ def generate_key(alice_simulator:QuantumSimulator,
 
         # 重置量子态
         alice_simulator.reset_state(); bob_simulator.reset_state()
-    print(f'经过{count}次，生成{num_key}位密钥')
+    print(f'经过{count}次迭代，生成{num_key}位密钥')
     return np.array(key)
 
 

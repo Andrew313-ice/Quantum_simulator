@@ -13,9 +13,9 @@ def teleportation(tele_sim:QuantumSimulator):
     tele_sim.act_gate('h', 1)
 
     if (tmp2:=tele_sim.measure(2)): tele_sim.act_gate('x', 3)
-    if (tmp3:=tele_sim.measure(1)): tele_sim.act_gate('z', 3)   
+    if (tmp3:=tele_sim.measure(1)): tele_sim.act_gate('z', 3)
     if tmp2: tele_sim.act_gate('x', 2)
-    if tmp3: tele_sim.act_gate('x', 3)
+    if tmp3: tele_sim.act_gate('x', 1)
 
     tele_sim.act_gate('ry', 3, angle=-0.123)  # 检测量子态是否传输成功
     tele_sim.dump()
@@ -23,5 +23,5 @@ def teleportation(tele_sim:QuantumSimulator):
 
 if __name__ == '__main__':
     tele_sim = QuantumSimulator(3)
-
+    
     teleportation(tele_sim)
