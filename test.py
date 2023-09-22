@@ -1,5 +1,6 @@
 import numpy as np
 from functools import reduce
+from itertools import chain
 
 
 dic_fun = {'a':lambda x:print(x)}
@@ -50,5 +51,11 @@ print(callable(GATE_DICT['rz']))
 #                               density_operator @  \
 #                               np.kron(ket[i], I)
 
-print(np.kron(np.eye(2), np.array([[1.], [0.]])).T.conjugate())
-print(np.kron(np.eye(2), np.array([[1., 0.]])))
+print(reduce(np.kron, 
+             [I:=np.eye(2)] + \
+             [I[:, 0, None].T.conjugate()]))
+
+print(reduce(np.kron, 
+             chain([I:=np.eye(2)], 
+                   [I[:, 0, None].T.conjugate()]
+                   )))

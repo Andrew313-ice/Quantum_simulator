@@ -1,5 +1,6 @@
 import numpy as np
 from functools import reduce
+from itertools import chain
 
 
 def schmidt_decomposition(target_psi:np.ndarray,
@@ -30,12 +31,13 @@ def schmidt_decomposition(target_psi:np.ndarray,
     '''
     def get_rhoAB(dim:int, dim_:int, flag:int) -> None:
         for i in range(dim_):
-            density_operator_AB[1-flag] += reduce(np.matmul, 
-                                                [tmp:=(np.kron(np.eye(dim), 
-                                                       ket_AB[flag][i].T.conjugate()))] + \
-                                                [density_operator] + \
-                                                [tmp.T.conjugate()]
-                                         )
+            density_operator_AB[1-flag] += \
+                reduce(np.matmul, chain([tmp:=(np.kron(np.eye(dim), 
+                                                       ket_AB[flag][i].T.conjugate()))],
+                                        [density_operator],
+                                        [tmp.T.conjugate()])
+                )
+            
     get_rhoAB(dimA, dimB, 1); get_rhoAB(dimB, dimA, 0)
     e_vals = [0, 0]
     e_vals[0], e_vecA = np.linalg.eig(density_operator_AB[0])
@@ -51,7 +53,7 @@ def schmidt_decomposition(target_psi:np.ndarray,
 
 if __name__ == "__main__":
     psi_test = np.array([[1.],
-                         [0.],
+                         [1.],
                          [0.],
                          [1.]])
     schmidt_decomposition(psi_test)

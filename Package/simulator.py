@@ -1,5 +1,6 @@
 import numpy as np
 from functools import reduce
+from itertools import chain
 
 
 I = np.eye(2)
@@ -30,22 +31,18 @@ class QuantumSimulator():
         self.state[0, 0] = 1.0
         self.num_qubits = num_qubits
 
-
     '''打印量子态'''
     def dump(self) -> None:
         print(self.state)
-
 
     '''重置量子态'''
     def reset_state(self) -> None:
         self.state = np.zeros((2**self.num_qubits, 1))
         self.state[0, 0] = 1.0
 
-
     '''模拟发送发量子态'''
     def send_state(self) -> np.ndarray:
         return self.state
-
 
     '''模拟接收量子态
     :param receive_state:    待接收量子态
@@ -54,7 +51,6 @@ class QuantumSimulator():
                       receive_state:np.ndarray) -> None:
         self.state = receive_state
     
-
     '''对量子态作用量子门
     :param gete_name:       作用于量子比特的量子门
     :param qubit:           目标比特
@@ -71,20 +67,20 @@ class QuantumSimulator():
         except KeyError:
             raise RuntimeError(f'量子门 {gate_name} 不存在')
         if not qubit_control:
-            self.state = reduce(np.kron, 
-                                [I] * (qubit - 1) + \
-                                [gate(angle) if callable(gate) else gate] + \
-                                [I] * (self.num_qubits - qubit)
+            self.state = reduce(np.kron, chain([I] * (qubit - 1),
+                                               [gate(angle) if callable(gate) else gate],
+                                               [I] * (self.num_qubits - qubit)
+                                         )
                          ) @ self.state
         else:
-            self.state = reduce(np.kron,
-                                [I] * (min(qubit, qubit_control) - 1) + \
-                                [gate[[0, 3, 2, 1], :] 
-                                 if qubit < qubit_control else 
-                                 gate[[0, 1, 3, 2], :]] + \
-                                [I] * (self.num_qubits - max(qubit, qubit_control))
-                         ) @ self.state
-
+            self.state = \
+                reduce(np.kron, chain([I] * (min(qubit, qubit_control) - 1),
+                                      [gate[[0, 3, 2, 1], :] 
+                                       if qubit < qubit_control else 
+                                       gate[[0, 1, 3, 2], :]],
+                                      [I] * (self.num_qubits - max(qubit, qubit_control))
+                                )
+                ) @ self.state
 
     '''量子态测量
     :param qubit:   待测量比特位
@@ -92,10 +88,10 @@ class QuantumSimulator():
     def measure(self,
                 qubit:int = 1) -> int:
         projection_operator = [
-            reduce(np.kron, 
-                   [I] * (qubit - 1) + \
-                   [(tmp:=I[:, i, None]) @ tmp.T.conjugate()] + \
-                   [I] * (self.num_qubits - qubit)
+            reduce(np.kron, chain([I] * (qubit - 1),
+                                  [(tmp:=I[:, i, None]) @ tmp.T.conjugate()],
+                                  [I] * (self.num_qubits - qubit)
+                            )
             ) for i in range(2)
         ]
         states = [
@@ -103,7 +99,8 @@ class QuantumSimulator():
             for projector in projection_operator
         ]
         rand = np.random.choice([0, 1], 
-                                p=[np.linalg.norm(states[i]) ** 2 for i in range(2)])
+                                p=[np.linalg.norm(states[i]) ** 2 for i in range(2)]
+               )
         self.state = (tmp:=states[rand]) / np.linalg.norm(tmp)
         return rand
     
