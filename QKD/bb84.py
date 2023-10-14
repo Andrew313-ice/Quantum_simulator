@@ -1,4 +1,5 @@
 import numpy as np
+from array import array
 import sys; sys.path.append('./')
 from Package.simulator import QuantumSimulator
 
@@ -12,14 +13,17 @@ def bin_to_hex(bits:np.ndarray) -> str:
 
 def generate_key(alice_simulator:QuantumSimulator, 
                  bob_simulator:QuantumSimulator,
-                 num_key:int) -> np.ndarray:
+                 key_len:int) -> np.ndarray:
     '''生成密钥
     :param alice:   发送方
     :param bob:     接收方
-    :param num_key: 所需密钥位数（二进制）
+    :param key_len: 所需密钥长度（二进制）
     '''
     key = []; count = 0
-    while len(key) < num_key:
+    alice_basis = array('b'); alice_key = array('b')
+    bob_basis = array('b'); bob_key = array('b')
+
+    while len(key) < key_len:
         count += 1
         # 生成随机密钥，并随机选择基
         if (alice_key:=np.random.choice([0, 1])):
@@ -39,7 +43,7 @@ def generate_key(alice_simulator:QuantumSimulator,
 
         # 重置量子态
         alice_simulator.reset_state(); bob_simulator.reset_state()
-    print(f'经过{count}次迭代，生成{num_key}位密钥')
+    print(f'经过{count}次迭代，生成{key_len}位密钥')
     return np.array(key)
 
 

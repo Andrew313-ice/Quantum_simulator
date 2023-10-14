@@ -51,11 +51,13 @@ print(callable(GATE_DICT['rz']))
 #                               density_operator @  \
 #                               np.kron(ket[i], I)
 
-print(reduce(np.kron, 
-             [I:=np.eye(2)] + \
-             [I[:, 0, None].T.conjugate()]))
+print([1, 2, 3].__len__())
 
-print(reduce(np.kron, 
-             chain([I:=np.eye(2)], 
-                   [I[:, 0, None].T.conjugate()]
-                   )))
+from array import array
+a = array('b', [1, 2, 3, 4, 5])
+b = array('b', [10, 11, 12])
+print(list(zip(a, b)))
+
+a = array('b')
+a.append(10)
+print(a)
