@@ -54,10 +54,10 @@ print(callable(GATE_DICT['rz']))
 print([1, 2, 3].__len__())
 
 from array import array
-a = array('b', [1, 2, 3, 4, 5])
-b = array('b', [10, 11, 12])
+a = array('b', [1, 2, 3, 4, 10])
+b = array('b', [10, 11, 12, 10, 10])
 print(list(zip(a, b)))
 
-a = array('b')
-a.append(10)
-print(a)
+c = np.array(a) == np.array(b)
+
+print(c)
