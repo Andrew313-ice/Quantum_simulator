@@ -26,12 +26,12 @@ def generate_key(alice_simulator:QuantumSimulator,
         bob_bases = array('b'); bob_keys = array('b')
         for _ in range(2*num):
             # 生成随机密钥，并随机选择基
-            alice_keys.append(np.random.choice([0, 1]))
-            alice_bases.append(np.random.choice([0, 1]))
-            if alice_keys[-1]:
+            if (tmp:=np.random.choice([0, 1])):
                 alice_simulator.act_gate('x')
-            if alice_bases[-1]:
+            alice_keys.append(tmp)
+            if (tmp:=np.random.choice([0, 1])):
                 alice_simulator.act_gate('h')
+            alice_bases.append(tmp)
 
             # 模拟发送和接受量子比特的过程
             bob_simulator.receive_state(alice_simulator.send_state())
@@ -49,7 +49,7 @@ def generate_key(alice_simulator:QuantumSimulator,
             send_receive(key_len - len(key))
         right_index = np.array(alice_bases) == np.array(bob_bases)
         assert np.sum(
-                (right_keys:=np.array(alice_keys)[right_index]) ==\
+                (right_keys:=np.array(alice_keys)[right_index]) == \
                 np.array(bob_keys)[right_index]
                ) != np.sum(right_keys)
         key.extend(right_keys)

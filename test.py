@@ -58,6 +58,9 @@ a = array('b', [1, 2, 3, 4, 10])
 b = array('b', [10, 11, 12, 10, 10])
 print(list(zip(a, b)))
 
-c = np.array(a) == np.array(b)
 
-print(c)
+print(list(chain(a, b)))
+
+if tmp := 'right':
+    ...
+print(tmp)
