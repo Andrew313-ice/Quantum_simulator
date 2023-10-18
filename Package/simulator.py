@@ -23,10 +23,10 @@ GATE_DICT = {
 
 class QuantumSimulator():
     '''初始化
-    :param num_qubits:    总比特数
+    :param num_qubits:    量子比特总数
     '''
-    def __init__(self, 
-                 num_qubits:int = 1) -> None:
+    def __init__(self, *, 
+                 num_qubits) -> None:
         self.state = np.zeros((2**num_qubits, 1))
         self.state[0, 0] = 1.0
         self.num_qubits = num_qubits

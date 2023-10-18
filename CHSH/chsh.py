@@ -49,5 +49,5 @@ def chsh_game(chsh_simulator:QuantumSimulator,
 
 
 if __name__ == '__main__':
-    chsh_game(QuantumSimulator(2), 1000)
+    chsh_game(QuantumSimulator(num_qubits=2), 1000)
     

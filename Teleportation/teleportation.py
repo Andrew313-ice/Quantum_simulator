@@ -22,6 +22,6 @@ def teleportation(tele_sim:QuantumSimulator):
 
 
 if __name__ == '__main__':
-    tele_sim = QuantumSimulator(3)
+    tele_sim = QuantumSimulator(num_qubits=3)
     
     teleportation(tele_sim)

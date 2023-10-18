@@ -13,13 +13,17 @@ def bin_to_hex(bits:np.ndarray) -> str:
 
 def generate_key(alice_simulator:QuantumSimulator, 
                  bob_simulator:QuantumSimulator,
-                 key_len:int) -> np.ndarray:
+                 key_len:int,
+                 flag:bool) -> np.ndarray:
     '''生成密钥
-    :param alice:   发送方
-    :param bob:     接收方
-    :param key_len: 所需密钥长度（二进制）
+    :param alice:       发送方
+    :param bob:         接收方
+    :param key_len:     所需密钥长度（二进制）
+    :param flag:        标记信息传输过程中是否存在窃听者 
     '''
     key = array('b')
+    if flag:
+        eve_simulator = QuantumSimulator(num_qubits=1)
 
     def send_receive(num:int) -> (array, array, array, array):
         alice_bases = array('b'); alice_keys = array('b')
@@ -33,8 +37,15 @@ def generate_key(alice_simulator:QuantumSimulator,
                 alice_simulator.act_gate('h')
             alice_bases.append(tmp)
 
-            # 模拟发送和接受量子比特的过程
-            bob_simulator.receive_state(alice_simulator.send_state())
+            # 窃听者窃取信息过程
+            if flag and np.random.choice([0, 1]):
+                eve_simulator.receive_state(alice_simulator.send_state())
+                eve_simulator.measure()
+                bob_simulator.receive_state(eve_simulator.send_state())
+            else:
+                bob_simulator.receive_state(alice_simulator.send_state())
+            
+            # 接收方接受量子比特并测量
             bob_bases.append(np.random.choice([0, 1]))
             if bob_bases[-1]:
                 bob_simulator.act_gate('h')
@@ -56,7 +67,7 @@ def generate_key(alice_simulator:QuantumSimulator,
         assert np.sum(
                 right_keys_bob[comparison_index] == \
                 right_keys_alice[comparison_index]
-               ) == int(len(right_keys_alice)/2), '有窃听者'
+               ) == int(len(right_keys_alice)/2), '存在窃听者'
         key.extend(np.delete(right_keys_bob, comparison_index))
         
     return np.array(key)
@@ -74,16 +85,18 @@ def encrypt_decode(message:np.ndarray,
     ])
 
 
-def bb84(message:np.ndarray) -> None:
+def bb84(message:np.ndarray, *,
+         eavesdropper:bool) -> None:
     '''bb84协议模拟
     :param message:     待传递信息
     '''
-    alice_simulator = QuantumSimulator()
-    bob_simulator = QuantumSimulator()
+    alice_simulator = QuantumSimulator(num_qubits=1)
+    bob_simulator = QuantumSimulator(num_qubits=1)
     print(f'Alice发送的信息为：{bin_to_hex(message)}')
 
     # 获取密钥
-    key = generate_key(alice_simulator, bob_simulator, message.shape[0])
+    key = generate_key(alice_simulator, bob_simulator, 
+                       len(message), flag=eavesdropper)
     print(f'密钥为：{bin_to_hex(key)}')
 
     # 信息加密
@@ -99,4 +112,4 @@ if __name__ == '__main__':
     # 生成64个随机0、1作为要传递的信息
     message = np.random.randint(0, 2, 2**6)
 
-    bb84(message)
+    bb84(message, eavesdropper=False)
