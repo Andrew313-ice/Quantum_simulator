@@ -31,9 +31,13 @@ def schmidt_decomposition(target_psi:np.ndarray,
     '''
     def get_rhoAB(dim:int, dim_:int, flag:int) -> None:
         for i in range(dim_):
+            tmp = np.kron(np.eye(dim), 
+                          ket_AB[flag][i].T.conjugate()) \
+                  if flag else \
+                  np.kron(ket_AB[flag][i].T.conjugate(), 
+                          np.eye(dim))
             density_operator_AB[1-flag] += \
-                reduce(np.matmul, chain([tmp:=(np.kron(np.eye(dim), 
-                                                       ket_AB[flag][i].T.conjugate()))],
+                reduce(np.matmul, chain([tmp],
                                         [density_operator],
                                         [tmp.T.conjugate()])
                 )
@@ -41,10 +45,10 @@ def schmidt_decomposition(target_psi:np.ndarray,
     get_rhoAB(dimA, dimB, 1); get_rhoAB(dimB, dimA, 0)
     e_vals = [0, 0]
     e_vals[0], e_vecA = np.linalg.eig(density_operator_AB[0])
-    print('子空间 A 约化密度矩阵的本征值为：', e_vals[0], '，本征矢为：', e_vecA)
+    print('子空间 A 约化密度矩阵的本征值为：\n', e_vals[0], '\n本征矢为：\n', e_vecA)
 
     e_vals[1], e_vecB = np.linalg.eig(density_operator_AB[1])
-    print('子空间 B 约化密度矩阵的本征值为：', e_vals[1], '，本征矢为：', e_vecB)
+    print('子空间 B 约化密度矩阵的本征值为：\n', e_vals[1], '\n本征矢为：\n', e_vecB)
 
     min_dim_index = 0 if e_vals[0].shape[0] <= e_vals[1].shape[0] else 1
     print('该纯态为：', '直积态' if np.round(max(e_vals[min_dim_index]), 10) == 1 
@@ -52,10 +56,10 @@ def schmidt_decomposition(target_psi:np.ndarray,
 
 
 if __name__ == "__main__":
-    psi_test = np.array([[1.],
+    psi_test = np.array([[0.],
                          [1.],
-                         [0.],
-                         [1.]])
+                         [1.],
+                         [0.]])
     schmidt_decomposition(psi_test)
 
     psi_test = np.ones([2**3]*2)[:, 1, None]

@@ -70,6 +70,7 @@ a = np.random.choice(a=6, size=4, replace=False)
 print(a)
 print(np.delete(b, a))
 
+c = np.array([0, 1])
 
-if 1 and np.random.choice([0, 1]):
-    print('√')
+for i in chain([b], [c]):
+    print(i)
