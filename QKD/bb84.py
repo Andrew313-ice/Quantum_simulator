@@ -24,7 +24,7 @@ def generate_key(alice_simulator:QuantumSimulator,
     def send_receive(num:int) -> (array, array, array, array):
         alice_bases = array('b'); alice_keys = array('b')
         bob_bases = array('b'); bob_keys = array('b')
-        for _ in range(2*num):
+        for _ in range(4*num):
             # 生成随机密钥，并随机选择基
             if (tmp:=np.random.choice([0, 1])):
                 alice_simulator.act_gate('x')
@@ -48,11 +48,16 @@ def generate_key(alice_simulator:QuantumSimulator,
         alice_bases, alice_keys, bob_bases, bob_keys = \
             send_receive(key_len - len(key))
         right_index = np.array(alice_bases) == np.array(bob_bases)
+        right_keys_bob = np.array(bob_keys)[right_index]
+        right_keys_alice = np.array(alice_keys)[right_index]
+        comparison_index = np.random.choice(a=len(right_keys_alice),
+                                            size=int(len(right_keys_alice)/2),
+                                            replace=False)
         assert np.sum(
-                (right_keys:=np.array(alice_keys)[right_index]) == \
-                np.array(bob_keys)[right_index]
-               ) != np.sum(right_keys)
-        key.extend(right_keys)
+                right_keys_bob[comparison_index] == \
+                right_keys_alice[comparison_index]
+               ) == int(len(right_keys_alice)/2), '有窃听者'
+        key.extend(np.delete(right_keys_bob, comparison_index))
         
     return np.array(key)
 

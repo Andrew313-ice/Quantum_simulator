@@ -64,3 +64,9 @@ print(list(chain(a, b)))
 if tmp := 'right':
     ...
 print(tmp)
+
+b = np.array([1, 2, 3, 4, 5, 6])
+a = np.random.choice(a=6, size=4, replace=False)
+print(a)
+print(b[a])
+print(np.delete(b, a))
