@@ -36,7 +36,7 @@ def schmidt_decomposition(target_psi:np.ndarray,
                   if flag else \
                   np.kron(ket_AB[flag][i].T.conjugate(), 
                           np.eye(dim))
-            density_operator_AB[1-flag] += \
+            density_operator_AB[1 - flag] += \
                 reduce(np.matmul, chain([tmp],
                                         [density_operator],
                                         [tmp.T.conjugate()])
