@@ -46,9 +46,9 @@ def generate_key(alice_simulator:QuantumSimulator,
                 bob_simulator.receive_state(alice_simulator.send_state())
             
             # 接收方接受量子比特并测量
-            bob_bases.append(np.random.choice([0, 1]))
-            if bob_bases[-1]:
+            if (tmp:=np.random.choice([0, 1])):
                 bob_simulator.act_gate('h')
+            bob_bases.append(tmp)
             bob_keys.append(bob_simulator.measure())
 
             # 重置量子态
