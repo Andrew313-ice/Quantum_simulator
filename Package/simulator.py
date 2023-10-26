@@ -52,7 +52,7 @@ class QuantumSimulator():
         self.state = receive_state
     
     '''对量子态作用量子门
-    :param gete_name:       作用于量子比特的量子门
+    :param gate_name:       作用于量子比特的量子门
     :param qubit:           目标比特
     :param qubit_control:   控制比特
     :param angle:           旋转角度
