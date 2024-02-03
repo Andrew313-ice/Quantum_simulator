@@ -62,5 +62,5 @@ if __name__ == "__main__":
                          [0.]])
     schmidt_decomposition(psi_test)
 
-    psi_test = np.ones([2**3]*2)[:, 1, None]
-    schmidt_decomposition(psi_test, 1, 2)
+    # psi_test = np.ones([2**3]*2)[:, 1, None]
+    # schmidt_decomposition(psi_test, 1, 2)
