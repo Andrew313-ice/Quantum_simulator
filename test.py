@@ -1,4 +1,7 @@
 import numpy as np
+import array
 
+def func():
+    return array.array('b', [1, 2, 3]), array.array('b', [1, 2, 3])
 
-print(np.zeros([dimA:=2**1] * 2))
+print(type(func()[0]))

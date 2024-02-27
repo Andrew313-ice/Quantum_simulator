@@ -1,5 +1,6 @@
 import numpy as np
 from array import array
+from typing import Tuple
 import sys; sys.path.append('./')
 from Package.simulator import QuantumSimulator
 
@@ -25,7 +26,7 @@ def generate_key(alice_simulator:QuantumSimulator,
     if flag:
         eve_simulator = QuantumSimulator(num_qubits=1)
 
-    def send_receive(num:int) -> (array, array, array, array):
+    def send_receive(num:int) -> Tuple[array, array, array, array]:
         alice_bases = array('b'); alice_keys = array('b')
         bob_bases = array('b'); bob_keys = array('b')
         for _ in range(4*num):

@@ -3,9 +3,9 @@ from functools import reduce
 from itertools import chain
 
 
-def schmidt_decomposition(target_psi:np.ndarray,
-                          spaceA_bit:int = 1,
-                          spaceB_bit:int = 1) -> None:
+def schmidt_decomposition(target_psi: np.ndarray,
+                          spaceA_bit: int = 1,
+                          spaceB_bit: int = 1) -> None:
     '''复合系统纯态施密特分解
     :param target_psi:      复合系统待分解量子态
     :param spaceA_bit:      子空间A的比特数
