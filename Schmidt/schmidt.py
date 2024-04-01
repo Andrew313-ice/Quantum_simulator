@@ -37,10 +37,14 @@ def schmidt_decomposition(target_psi: np.ndarray,
                   np.kron(ket_AB[flag][i].T.conjugate(), 
                           np.eye(dim))
             density_operator_AB[1 - flag] += \
-                reduce(np.matmul, chain([tmp],
-                                        [density_operator],
-                                        [tmp.T.conjugate()])
+                reduce(np.matmul, [tmp,
+                                   density_operator,
+                                   tmp.T.conjugate()]
                 )
+                # reduce(np.matmul, chain([tmp],
+                #                         [density_operator],
+                #                         [tmp.T.conjugate()])
+                # )
             
     get_rhoAB(dimA, dimB, 1); get_rhoAB(dimB, dimA, 0)
     e_vals = [0, 0]
